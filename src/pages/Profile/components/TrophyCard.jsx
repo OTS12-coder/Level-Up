@@ -1,5 +1,5 @@
 import { Lock } from "lucide-react";
-import Card from "../../components/common/Card";
+import Card from "../../../components/common/Card";
 
 export default function TrophyCard({ t }) {
   const IconComp = t.Icon;

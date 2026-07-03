@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react";
-import Card from "../../components/common/Card";
+import Card from "../../../components/common/Card";
 
 export default function ProjectCard({ p }) {
   if (p.large) {
