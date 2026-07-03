@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const STREAK_KEY = "lu_streak_start";
-const DAY_MS = 24 * 60 * 60 * 1000;
-
 // ─── Icons ──────────────────────────────────────────────────────────────
 const ZapIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>;
 const StarIcon = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="#4edea3"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>;
@@ -31,7 +28,6 @@ const ACTIVITIES = [
   { icon: <BadgeIcon />, title: `Earned "The Fast Learner" Badge`, sub: "Yesterday • Achievement" },
   { icon: <ChatIcon />, title: `Contribution to "UI Patterns"`, sub: "3 days ago • Community" },
 ];
-
 const COURSES = [
   { level: "INTERMEDIATE", color: "#4edea3", bg: "from-[#0e7a6e] to-[#4edea3]", title: "Advanced Interface Logic: Systems Thinking", hours: "4.5h", rating: "4.9", modules: 12 },
   { level: "ADVANCED", color: "#c3c0ff", bg: "from-[#1e1b5e] to-[#6d67f0]", title: "Cybernetic Security: Offensive Defense 101", hours: "8.2h", rating: "4.7", modules: 24 },
@@ -39,6 +35,8 @@ const COURSES = [
 
 // ─── Streak hook ────────────────────────────────────────────────────────
 function useStreak() {
+  const STREAK_KEY = "lu_streak_start";
+  const DAY_MS = 24 * 60 * 60 * 1000;
   const [startTs] = useState(() => {
     try {
       const raw = localStorage.getItem(STREAK_KEY);
@@ -48,14 +46,11 @@ function useStreak() {
     try { localStorage.setItem(STREAK_KEY, String(ts)); } catch {}
     return ts;
   });
-
   const [days, setDays] = useState(() => Math.floor((Date.now() - startTs) / DAY_MS));
-
   useEffect(() => {
     const id = setInterval(() => setDays(Math.floor((Date.now() - startTs) / DAY_MS)), 60_000);
     return () => clearInterval(id);
   }, [startTs]);
-
   return days;
 }
 
@@ -137,13 +132,11 @@ function CourseCard({ course }) {
 }
 
 // ─── Page ───────────────────────────────────────────────────────────────
-export default function Dashboard() {
+function Dashboard() {
   const navigate = useNavigate();
   const streakDays = useStreak();
-
   return (
     <main className="overflow-y-auto px-6 py-5 space-y-5 bg-[var(--bg-app)] min-h-screen">
-
       {/* Welcome row */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
@@ -162,7 +155,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-
       {/* Top stats row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl p-5 relative overflow-hidden sm:col-span-1">
@@ -182,7 +174,6 @@ export default function Dashboard() {
             <span className="text-xs font-semibold text-[var(--text-variant)]">75%</span>
           </div>
         </div>
-
         <StatCard
           icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4edea3" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>}
           value="4,250"
@@ -190,13 +181,10 @@ export default function Dashboard() {
           sub="+12% this week"
           subIcon={<TrendUpIcon />}
         />
-
         <StatCard icon={<FireIcon />} label="Day Streak" isStreak days={streakDays} />
       </div>
-
       {/* Bottom grid */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_0.85fr] gap-4">
-
         {/* Recent activity */}
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl p-5 flex flex-col gap-4">
           <div className="flex items-center justify-between">
@@ -226,7 +214,6 @@ export default function Dashboard() {
             <p className="text-[10px] text-[var(--text-variant)]">250 XP until Level 25</p>
           </div>
         </div>
-
         {/* Recommended courses */}
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
@@ -243,7 +230,6 @@ export default function Dashboard() {
             {COURSES.map((c, i) => <CourseCard key={i} course={c} />)}
           </div>
         </div>
-
         {/* Roadmap CTA */}
         <div className="flex flex-col gap-4">
           <div className="flex-1 bg-gradient-to-br from-[#131b2e] to-[#1a1040] border border-[var(--border-color)] rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between">
@@ -274,3 +260,5 @@ export default function Dashboard() {
     </main>
   );
 }
+
+export default Dashboard;
